@@ -1,0 +1,36 @@
+version: '3'
+services:
+
+  web:
+    container_name: youtube_theme_trends
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    volumes:
+        - ".:/repo/"
+    ports:
+        - "8000:8000"
+    command: >
+      bash -c "cd /repo && cd project && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+    expose:
+      - "8000"
+    entrypoint: /entrypoint.sh
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres
+    expose:
+      - 5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - pg_backups:/pg_backups
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  pg_data: {}
+  pg_backups: {}
