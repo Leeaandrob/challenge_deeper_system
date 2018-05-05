@@ -69,3 +69,19 @@ class ScoreTest(TestCase):
         response = self.manager.get_good_comments()
 
         self.assertEqual(response, 0)
+
+    def test_get_positivity_factor(self):
+        u"""Test to verify the return of the method get_positivity_factor
+        """
+
+        # comments
+        make(Comment, video=self.video, is_positive=True, _quantity=20)
+        make(Comment, video=self.video, is_positive=False, _quantity=7)
+
+        # thumbs
+        make(Thumb, video=self.video, is_positive=True, _quantity=5)
+        make(Thumb, video=self.video, is_positive=False, _quantity=2)
+
+        response = self.manager.get_positivity_factor()
+
+        self.assertEqual(response, 0.733)

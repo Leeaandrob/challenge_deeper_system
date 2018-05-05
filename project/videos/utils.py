@@ -6,6 +6,12 @@ class Score:
     def __init__(self, video):
         self.video = video
 
+    def get_positivity_factor(self):
+        good_comments = self.get_good_comments()
+        thumbs_up = self.get_thumbs_up()
+
+        return round(0.7 * good_comments + 0.3 * thumbs_up, 3)
+
     def get_good_comments(self):
         positive_comments = Comment.objects.filter(
             video=self.video, is_positive=True).count()
