@@ -13,9 +13,9 @@ COPY requirements.txt /repo/
 
 RUN pip3 install -r /repo/requirements.txt
 
-ADD project/ /repo/
-
 COPY .docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+ADD project/ /repo/
 
 CMD ["uwsgi", "--ini", "/repo/uwsgi.ini"]
