@@ -2,7 +2,7 @@ from videos.models import (
     Thumb, Comment)
 
 
-class Score:
+class VideoInsights:
     def __init__(self, video):
         self.video = video
 

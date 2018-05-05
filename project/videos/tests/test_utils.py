@@ -6,10 +6,10 @@ from model_mommy.mommy import make
 
 from videos.models import (
     Video, Theme, Thumb, Comment)
-from videos.utils import Score
+from videos.utils import VideoInsights
 
 
-class ScoreTest(TestCase):
+class VideoInsightsTest(TestCase):
     def setUp(self):
         theme_one = make(Theme)
         theme_two = make(Theme)
@@ -23,7 +23,7 @@ class ScoreTest(TestCase):
         self.video.themes.add(theme_two)
         self.video.themes.add(theme_three)
 
-        self.manager = Score(video=self.video)
+        self.manager = VideoInsights(video=self.video)
 
     def test_get_thumbs_up_zero(self):
         u"""This test will verify the
@@ -114,7 +114,7 @@ class ScoreTest(TestCase):
         """
 
         video = make(Video, date_uploaded=datetime.today())
-        manager = Score(video=video)
+        manager = VideoInsights(video=video)
 
         response = manager.get_time_factor()
 
