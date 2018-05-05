@@ -6,6 +6,12 @@ class Score:
     def __init__(self, video):
         self.video = video
 
+    def get_score(self):
+        time_factor = self.get_time_factor()
+        positivity_factor = self.get_positivity_factor()
+
+        return round(self.video.views * time_factor * positivity_factor, 3)
+
     def get_time_factor(self):
         return round(
             max(0, 1 - (self.video.get_days_since_upload() / 365)), 3)

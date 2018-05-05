@@ -15,7 +15,10 @@ class ScoreTest(TestCase):
         theme_two = make(Theme)
         theme_three = make(Theme)
 
-        self.video = make(Video, date_uploaded=datetime(2017, 11, 25))
+        self.video = make(
+            Video, date_uploaded=datetime(2017, 11, 25),
+            views=1024,
+        )
         self.video.themes.add(theme_one)
         self.video.themes.add(theme_two)
         self.video.themes.add(theme_three)
@@ -116,3 +119,19 @@ class ScoreTest(TestCase):
         response = manager.get_time_factor()
 
         self.assertEqual(response, 1.0)
+
+    def test_get_score(self):
+        u"""Test to verify if the method score will
+        return the value of score from a video"""
+
+        # comments
+        make(Comment, video=self.video, is_positive=True, _quantity=20)
+        make(Comment, video=self.video, is_positive=False, _quantity=7)
+
+        # thumbs
+        make(Thumb, video=self.video, is_positive=True, _quantity=5)
+        make(Thumb, video=self.video, is_positive=False, _quantity=2)
+
+        response = self.manager.get_score()
+
+        self.assertEqual(response, 419.581)
