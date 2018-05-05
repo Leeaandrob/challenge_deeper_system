@@ -2,29 +2,42 @@ from django.test import TestCase
 
 from model_mommy.mommy import make
 
-from videos.models import (Video, Theme, Thumb)
+from videos.models import (
+    Video, Theme, Thumb, Comment)
 from videos.utils import Score
 
 
 class ScoreTest(TestCase):
-    def test_get_thumbs_up(self):
-        u"""This test will verify the
-        return of the method get_thumbs_up"""
-
+    def setUp(self):
         theme_one = make(Theme)
         theme_two = make(Theme)
         theme_three = make(Theme)
 
-        video = make(Video)
-        video.themes.add(theme_one)
-        video.themes.add(theme_two)
-        video.themes.add(theme_three)
+        self.video = make(Video)
+        self.video.themes.add(theme_one)
+        self.video.themes.add(theme_two)
+        self.video.themes.add(theme_three)
 
-        make(Thumb, video=video, is_positive=True, _quantity=5)
-        make(Thumb, video=video, is_positive=False, _quantity=2)
+        self.manager = Score(video=self.video)
 
-        self.manager = Score(video=video)
+    def test_get_thumbs_up(self):
+        u"""This test will verify the
+        return of the method get_thumbs_up"""
+
+        make(Thumb, video=self.video, is_positive=True, _quantity=5)
+        make(Thumb, video=self.video, is_positive=False, _quantity=2)
 
         response = self.manager.get_thumbs_up()
 
         self.assertEqual(response, 0.714)
+
+    def test_good_comments(self):
+        u"""Test to verify the return of the method get good_comments
+        of videos"""
+
+        make(Comment, video=self.video, is_positive=True, _quantity=20)
+        make(Comment, video=self.video, is_positive=False, _quantity=7)
+
+        response = self.manager.get_good_comments()
+
+        self.assertEqual(response, 0.741)
