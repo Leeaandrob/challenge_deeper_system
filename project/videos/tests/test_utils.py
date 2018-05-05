@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.test import TestCase
 
 from model_mommy.mommy import make
@@ -13,7 +15,7 @@ class ScoreTest(TestCase):
         theme_two = make(Theme)
         theme_three = make(Theme)
 
-        self.video = make(Video)
+        self.video = make(Video, date_uploaded=datetime(2017, 11, 25))
         self.video.themes.add(theme_one)
         self.video.themes.add(theme_two)
         self.video.themes.add(theme_three)
@@ -94,3 +96,23 @@ class ScoreTest(TestCase):
         response = self.manager.get_positivity_factor()
 
         self.assertEqual(response, 0.0)
+
+    def test_get_time_factor(self):
+        u"""Test to verify the return of the method get_time_factor
+        """
+
+        response = self.manager.get_time_factor()
+
+        self.assertEqual(response, 0.559)
+
+    def test_get_time_factor_zero(self):
+        u"""Test to verify the return of the method get_time_factor
+        when video has 0 days of the uploded
+        """
+
+        video = make(Video, date_uploaded=datetime.today())
+        manager = Score(video=video)
+
+        response = manager.get_time_factor()
+
+        self.assertEqual(response, 1.0)

@@ -6,6 +6,10 @@ class Score:
     def __init__(self, video):
         self.video = video
 
+    def get_time_factor(self):
+        return round(
+            max(0, 1 - (self.video.get_days_since_upload() / 365)), 3)
+
     def get_positivity_factor(self):
         good_comments = self.get_good_comments()
         thumbs_up = self.get_thumbs_up()
