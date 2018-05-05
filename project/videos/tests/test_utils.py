@@ -85,3 +85,12 @@ class ScoreTest(TestCase):
         response = self.manager.get_positivity_factor()
 
         self.assertEqual(response, 0.733)
+
+    def test_get_positivity_factor_zero(self):
+        u"""Test to verify the return of the method get_positivity_facto
+        when videos has zero comments and thumbsr
+        """
+
+        response = self.manager.get_positivity_factor()
+
+        self.assertEqual(response, 0.0)
