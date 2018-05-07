@@ -97,7 +97,7 @@ class VideoInsightsTest(TestCase):
         theme_three = make(Theme)
 
         self.video = make(
-            Video, date_uploaded=datetime(2017, 11, 25),
+            Video, date_uploaded=datetime(2017, 11, 25).date(),
             views=1024,
         )
         self.video.themes.add(theme_one)
@@ -187,14 +187,14 @@ class VideoInsightsTest(TestCase):
 
         response = self.manager.get_time_factor()
 
-        self.assertEqual(response, 0.559)
+        self.assertEqual(response, 0.556)
 
     def test_get_time_factor_zero(self):
         u"""Test to verify the return of the method get_time_factor
         when video has 0 days of the uploded
         """
 
-        video = make(Video, date_uploaded=datetime.today())
+        video = make(Video, date_uploaded=datetime.today().date())
         manager = VideoInsights(video=video)
 
         response = manager.get_time_factor()
@@ -215,4 +215,4 @@ class VideoInsightsTest(TestCase):
 
         response = self.manager.get_score()
 
-        self.assertEqual(response, 419.581)
+        self.assertEqual(response, 417.329)
