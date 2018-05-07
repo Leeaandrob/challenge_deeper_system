@@ -2,6 +2,36 @@ from videos.models import (
     Thumb, Comment)
 
 
+class PopularThemes:
+    def __init__(self, data):
+        self.data = data
+
+    def get_themes(self):
+        themes = []
+        for item in self.data:
+            for theme in item.get('themes'):
+                if theme not in themes:
+                    themes.append(theme.get('name'))
+
+        return set(themes)
+
+    def get_themes_score(self):
+        themes_score = []
+        score = 0
+
+        for item in self.data:
+            for video_theme in item.get('themes'):
+                score += item.get('score')
+                themes_score.append(
+                    dict(
+                        name=video_theme.get('name'),
+                        id=video_theme.get('id'),
+                        score=score
+                    ))
+                score = 0
+        return themes_score
+
+
 class VideoInsights:
     def __init__(self, video):
         self.video = video
