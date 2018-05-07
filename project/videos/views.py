@@ -1,7 +1,12 @@
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, RedirectView
 
 from videos.models import Video
 from videos.utils import VideoInsights, PopularThemes
+
+
+class RedirectToPopularThemeListView(RedirectView):
+    url = reverse_lazy('popular_themes')
 
 
 class PopularThemesListView(ListView):
