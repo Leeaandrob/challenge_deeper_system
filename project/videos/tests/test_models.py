@@ -17,7 +17,7 @@ class VideoTest(TestCase):
 
         video = Video()
         video.title = 'Video test from youtube'
-        video.date_uploaded = datetime(2018, 1, 4)
+        video.date_uploaded = datetime(2018, 1, 4).date()
         video.views = 1024
         video.save()
 
