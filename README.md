@@ -9,7 +9,7 @@ A project to analyze trends of theme.
 ## Installing
 
     $ git clone https://github.com/Leeaandrob/challenge_deeper_system.git
-    $ cd project
+    $ cd challenge_deeper_system
 
 ## Testing
 First you need to install the depedencies
