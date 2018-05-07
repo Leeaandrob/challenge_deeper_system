@@ -12,7 +12,7 @@ from videos.utils import (
 
 class GetPopularThemesTest(TestCase):
     def setUp(self):
-        data = [
+        self.data = [
             {'video': 1, 'themes': [], 'score': 0.0},
             {'video': 2, 'themes': [], 'score': 0.0},
             {'video': 3, 'themes': [], 'score': 0.0},
@@ -37,22 +37,57 @@ class GetPopularThemesTest(TestCase):
             ], 'score': 701.053}
         ]
 
-        self.manager = PopularThemes(data)
+        self.manager = PopularThemes(self.data)
 
     def test_get_themes(self):
         u"""this test will verify if the method
         get_themes return a list of the themes"""
 
         response = self.manager.get_themes()
-        expected = {'three', 'one', 'two'}
 
-        self.assertEqual(response, expected)
+        self.assertEqual(len(response), 3)
+        self.assertIn('name', response[0])
+        self.assertIn('id', response[0])
+        self.assertIn('score', response[0])
 
     def test_get_themes_scores(self):
         u"""This test will get the score of themes"""
         response = self.manager.get_themes_score()
 
         self.assertEqual(len(response), 6)
+
+    def test_get_popular_themes_when_has_more_themes(self):
+        u"""This test will verify if the method will return
+        the popular themes"""
+
+        data = [
+            {'name': 'four', 'id': 4},
+            {'name': 'five', 'id': 5},
+        ]
+
+        self.data[0]['themes'].extend(data)
+        self.data[0]['score'] = 1500
+        self.data[1]['themes'].extend(data)
+        self.data[1]['score'] = 700
+        self.data[2]['themes'].extend([data[0]])
+        self.data[2]['score'] = 300
+
+        response = self.manager.get_popular_themes()
+
+        self.assertEqual(len(response), 5)
+        self.assertEqual(response[0].get('name'), 'four')
+        self.assertEqual(response[0].get('score'), 2500)
+        self.assertEqual(response[0].get('id'), 4)
+
+    def test_get_popular_themes(self):
+        u"""This test will verify if the method will return
+        the popular themes"""
+        response = self.manager.get_popular_themes()
+
+        self.assertEqual(len(response), 3)
+        self.assertEqual(response[0].get('name'), 'three')
+        self.assertEqual(response[0].get('score'), 1396.101)
+        self.assertEqual(response[0].get('id'), 3)
 
 
 class VideoInsightsTest(TestCase):
