@@ -6,6 +6,13 @@ from django.test import TestCase
 from model_mommy.mommy import make
 
 
+class PopularThemeRedirectViewTest(TestCase):
+    def test_correct_response(self):
+        response = self.client.get(reverse('main'))
+
+        self.assertRedirects(response, reverse('popular_themes'))
+
+
 class PoupularThemesListViewTest(TestCase):
     def setUp(self):
         self.url = reverse('popular_themes')
@@ -66,7 +73,7 @@ class PoupularThemesListViewTest(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(len(response.context['themes']), 3)
-        self.assertEqual(response.context['themes'][0], '')
+        self.assertEqual(response.context['themes'][0].get('name'), 'three')
 
     def test_correct_response(self):
         response = self.client.get(self.url)
