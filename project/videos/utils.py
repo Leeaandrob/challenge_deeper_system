@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from videos.models import (
     Thumb, Comment)
 
@@ -11,9 +13,10 @@ class PopularThemes:
         for item in self.data:
             for theme in item.get('themes'):
                 if theme not in themes:
-                    themes.append(theme.get('name'))
+                    theme.update({'score': 0})
+                    themes.append(theme)
 
-        return set(themes)
+        return list({v['name']: v for v in themes}.values())
 
     def get_themes_score(self):
         themes_score = []
@@ -30,6 +33,15 @@ class PopularThemes:
                     ))
                 score = 0
         return themes_score
+
+    def get_popular_themes(self):
+        data = self.get_themes()
+
+        for theme in data:
+            for item in self.get_themes_score():
+                if theme.get('name') == item.get('name'):
+                    theme['score'] += item.get('score')
+        return sorted(data, key=itemgetter('score'), reverse=True)
 
 
 class VideoInsights:
