@@ -6,7 +6,88 @@ from model_mommy.mommy import make
 
 from videos.models import (
     Video, Theme, Thumb, Comment)
-from videos.utils import VideoInsights
+from videos.utils import (
+    VideoInsights, PopularThemes)
+
+
+class GetPopularThemesTest(TestCase):
+    def setUp(self):
+        self.data = [
+            {'video': 1, 'themes': [], 'score': 0.0},
+            {'video': 2, 'themes': [], 'score': 0.0},
+            {'video': 3, 'themes': [], 'score': 0.0},
+            {'video': 4, 'themes': [], 'score': 0.0},
+            {'video': 5, 'themes': [], 'score': 0.0},
+            {'video': 6, 'themes': [], 'score': 0.0},
+            {'video': 7, 'themes': [], 'score': 0.0},
+            {'video': 8, 'themes': [], 'score': 0.0},
+            {'video': 9, 'themes': [], 'score': 0.0},
+            {'video': 10, 'themes': [], 'score': 0.0},
+            {'video': 11, 'themes': [
+                {'name': 'one', 'id': 1},
+                {'name': 'three', 'id': 3}
+            ], 'score': 695.048},
+            {'video': 12, 'themes': [
+                {'name': 'one', 'id': 1},
+                {'name': 'two', 'id': 2}
+            ], 'score': 0.0},
+            {'video': 13, 'themes': [
+                {'name': 'two', 'id': 2},
+                {'name': 'three', 'id': 3}
+            ], 'score': 701.053}
+        ]
+
+        self.manager = PopularThemes(self.data)
+
+    def test_get_themes(self):
+        u"""this test will verify if the method
+        get_themes return a list of the themes"""
+
+        response = self.manager.get_themes()
+
+        self.assertEqual(len(response), 3)
+        self.assertIn('name', response[0])
+        self.assertIn('id', response[0])
+        self.assertIn('score', response[0])
+
+    def test_get_themes_scores(self):
+        u"""This test will get the score of themes"""
+        response = self.manager.get_themes_score()
+
+        self.assertEqual(len(response), 6)
+
+    def test_get_popular_themes_when_has_more_themes(self):
+        u"""This test will verify if the method will return
+        the popular themes"""
+
+        data = [
+            {'name': 'four', 'id': 4},
+            {'name': 'five', 'id': 5},
+        ]
+
+        self.data[0]['themes'].extend(data)
+        self.data[0]['score'] = 1500
+        self.data[1]['themes'].extend(data)
+        self.data[1]['score'] = 700
+        self.data[2]['themes'].extend([data[0]])
+        self.data[2]['score'] = 300
+
+        response = self.manager.get_popular_themes()
+
+        self.assertEqual(len(response), 5)
+        self.assertEqual(response[0].get('name'), 'four')
+        self.assertEqual(response[0].get('score'), 2500)
+        self.assertEqual(response[0].get('id'), 4)
+
+    def test_get_popular_themes(self):
+        u"""This test will verify if the method will return
+        the popular themes"""
+        response = self.manager.get_popular_themes()
+
+        self.assertEqual(len(response), 3)
+        self.assertEqual(response[0].get('name'), 'three')
+        self.assertEqual(response[0].get('score'), 1396.101)
+        self.assertEqual(response[0].get('id'), 3)
 
 
 class VideoInsightsTest(TestCase):
@@ -16,7 +97,7 @@ class VideoInsightsTest(TestCase):
         theme_three = make(Theme)
 
         self.video = make(
-            Video, date_uploaded=datetime(2017, 11, 25),
+            Video, date_uploaded=datetime(2017, 11, 25).date(),
             views=1024,
         )
         self.video.themes.add(theme_one)
@@ -106,14 +187,14 @@ class VideoInsightsTest(TestCase):
 
         response = self.manager.get_time_factor()
 
-        self.assertEqual(response, 0.559)
+        self.assertEqual(response, 0.556)
 
     def test_get_time_factor_zero(self):
         u"""Test to verify the return of the method get_time_factor
         when video has 0 days of the uploded
         """
 
-        video = make(Video, date_uploaded=datetime.today())
+        video = make(Video, date_uploaded=datetime.today().date())
         manager = VideoInsights(video=video)
 
         response = manager.get_time_factor()
@@ -134,4 +215,4 @@ class VideoInsightsTest(TestCase):
 
         response = self.manager.get_score()
 
-        self.assertEqual(response, 419.581)
+        self.assertEqual(response, 417.329)

@@ -1,5 +1,53 @@
+from operator import itemgetter
+
 from videos.models import (
     Thumb, Comment)
+
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield list(l[i:i + n])
+
+
+class PopularThemes:
+    def __init__(self, data):
+        self.data = data
+
+    def get_themes(self):
+        themes = []
+        for item in self.data:
+            for theme in item.get('themes'):
+                if theme not in themes:
+                    theme.update({'score': 0})
+                    themes.append(theme)
+
+        return list({v['name']: v for v in themes}.values())
+
+    def get_themes_score(self):
+        themes_score = []
+        score = 0
+
+        for item in self.data:
+            for video_theme in item.get('themes'):
+                score += item.get('score')
+                themes_score.append(
+                    dict(
+                        name=video_theme.get('name'),
+                        id=video_theme.get('id'),
+                        score=score
+                    ))
+                score = 0
+        return themes_score
+
+    def get_popular_themes(self):
+        data = self.get_themes()
+
+        for theme in data:
+            for item in self.get_themes_score():
+                if theme.get('name') == item.get('name'):
+                    theme['score'] += item.get('score')
+        return sorted(data, key=itemgetter('score'), reverse=True)
 
 
 class VideoInsights:

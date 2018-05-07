@@ -20,7 +20,7 @@ class Video(models.Model):
 
     def get_days_since_upload(self):
         today = datetime.today()
-        diff = today - self.date_uploaded
+        diff = today.date() - self.date_uploaded
         return diff.days
 
 
