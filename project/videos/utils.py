@@ -4,6 +4,12 @@ from videos.models import (
     Thumb, Comment)
 
 
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield list(l[i:i + n])
+
+
 class PopularThemes:
     def __init__(self, data):
         self.data = data
