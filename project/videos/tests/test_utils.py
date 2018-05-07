@@ -6,7 +6,53 @@ from model_mommy.mommy import make
 
 from videos.models import (
     Video, Theme, Thumb, Comment)
-from videos.utils import VideoInsights
+from videos.utils import (
+    VideoInsights, PopularThemes)
+
+
+class GetPopularThemesTest(TestCase):
+    def setUp(self):
+        data = [
+            {'video': 1, 'themes': [], 'score': 0.0},
+            {'video': 2, 'themes': [], 'score': 0.0},
+            {'video': 3, 'themes': [], 'score': 0.0},
+            {'video': 4, 'themes': [], 'score': 0.0},
+            {'video': 5, 'themes': [], 'score': 0.0},
+            {'video': 6, 'themes': [], 'score': 0.0},
+            {'video': 7, 'themes': [], 'score': 0.0},
+            {'video': 8, 'themes': [], 'score': 0.0},
+            {'video': 9, 'themes': [], 'score': 0.0},
+            {'video': 10, 'themes': [], 'score': 0.0},
+            {'video': 11, 'themes': [
+                {'name': 'one', 'id': 1},
+                {'name': 'three', 'id': 3}
+            ], 'score': 695.048},
+            {'video': 12, 'themes': [
+                {'name': 'one', 'id': 1},
+                {'name': 'two', 'id': 2}
+            ], 'score': 0.0},
+            {'video': 13, 'themes': [
+                {'name': 'two', 'id': 2},
+                {'name': 'three', 'id': 3}
+            ], 'score': 701.053}
+        ]
+
+        self.manager = PopularThemes(data)
+
+    def test_get_themes(self):
+        u"""this test will verify if the method
+        get_themes return a list of the themes"""
+
+        response = self.manager.get_themes()
+        expected = {'three', 'one', 'two'}
+
+        self.assertEqual(response, expected)
+
+    def test_get_themes_scores(self):
+        u"""This test will get the score of themes"""
+        response = self.manager.get_themes_score()
+
+        self.assertEqual(len(response), 6)
 
 
 class VideoInsightsTest(TestCase):
