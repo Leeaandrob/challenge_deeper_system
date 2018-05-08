@@ -17,10 +17,7 @@ class PopularThemesListView(ListView):
     def get_themes(self, videos):
         data = [dict(
             video=video.id,
-            themes=[dict(
-                id=theme.id,
-                name=theme.name,
-            ) for theme in video.themes.all()],
+            themes=video.themes.values('id', 'name'),
             score=VideoInsights(video).get_score(),
         ) for video in videos]
 
