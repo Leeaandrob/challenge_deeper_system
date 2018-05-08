@@ -49,22 +49,3 @@ Its possible to use the pdb follow this intructions:
 
     $ docker ps
     $ docker attach <container_id>
-
-## Deploy
-
-We are using heroku:
-
-    $ git add .
-    $ git commit -m "message"
-    $ heroku create {{ project_name }}
-    $ heroku config:set SECRET_KEY='{{ secret_key }}'
-    $ heroku config:set DEBUG=False
-    $ heroku config:set FORCE_SSL=False
-    $ heroku config:set RAVEN_URL={{ SENTRY DSN URL }}
-    $ heroku config:set ROOT_HANDLER='stderr'
-    $ heroku config:set ALLOWED_HOSTS=*
-    $ heroku git:remote --app {{ project_name }}
-    $ heroku config:add DISABLE_COLLECTSTATIC=0
-    $ git push heroku master
-    $ heroku run python manage.py migrate
-    $ heroku run python manage.py createsuperuser
